@@ -30,7 +30,9 @@ void thumbhelix(const bool scroll)
         r.x = th8.x;
         r.y = th8.y;
     }
-    r.buttons = (th8.z == 0) ? 1 : 0;
+    if(th8.z == 0) {
+        r.buttons |= 0x01;
+    }
     pointing_device_set_report(r);
     pointing_device_send();
 }
