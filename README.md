@@ -27,7 +27,6 @@ $ git clone https://github.com/yskoht/thumbhelix.git qmk_firmware/users/[KEYMAP]
 **qmk_firmware/users/[KEYMAP]/config.h**
 
 ```c
-#define USE_THUMBHELIX
 #ifdef USE_THUMBHELIX
     #include "thumbhelix/config.h"
 #endif
@@ -46,7 +45,6 @@ include $(USER_PATH)/thumbhelix/rules.mk
 ```c
 #ifdef USE_THUMBHELIX
   #include "thumbhelix.h"
-  static bool th_scroll = false;
 #endif
 
 #ifdef USE_THUMBHELIX
@@ -59,9 +57,52 @@ void pointing_device_init(void)
 
 void pointing_device_task(void)
 {
-  thumbhelix(th_scroll);
+  thumbhelix();
 }
 #endif
+```
+
+If you want to use BTN1 or BTN2, add `custom_keycodes` and switch statement in `process_record_user()`.
+
+```c
+enum custom_keycodes {
+  QWERTY = SAFE_RANGE,
+  LOWER,
+  RAISE,
+  BTN1,  // Left button
+  BTN2,  // Right button. Assign to keymaps
+  RGBRST
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+
+  ...
+
+    case BTN1:
+      #ifdef USE_THUMBHELIX
+        if (record->event.pressed) {
+          th_pressed(TH_BTN1);
+        }
+        else {
+          th_released(TH_BTN1);
+        }
+      #endif
+      return false;
+      break;
+    case BTN2:
+      #ifdef USE_THUMBHELIX
+        if (record->event.pressed) {
+          th_pressed(TH_BTN2);
+        }
+        else {
+          th_released(TH_BTN2);
+        }
+      #endif
+      return false;
+      break;
+
+  ...
 ```
 
 5.  If you put Thumbhelix on the right side, you have to set the right side to master, and vice versa.
@@ -75,18 +116,12 @@ void pointing_device_task(void)
 
 6. Build and upload.
 
-Build
-
 ```bash
 $ make helix:[KEYMAP]
-```
-If build script shows warning for checking file size, you have to delete some code.
-
-Upload
-
-```bash
 $ sudo make helix:[KEYMAP]:avrdude
 ```
+
+If build script shows warning for checking file size, you have to delete some code.
 
 
 ## Configurable parameters
@@ -103,3 +138,4 @@ $ sudo make helix:[KEYMAP]:avrdude
 ## License
 
 This software is released under the MIT License, see LICENSE.
+
