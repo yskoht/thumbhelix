@@ -1,6 +1,9 @@
 #ifndef __THUMBHELIX_H__
 #define __THUMBHELIX_H__
 
+#include <stdint.h>
+#include <stdbool.h>
+
 #include "pointing_device.h"
 
 typedef struct {
@@ -15,10 +18,20 @@ typedef struct {
     int8_t z;
 } Thumbhelix8;
 
+typedef enum {
+    TH_NO_PRESSED = 0x00,
+    TH_BTN1       = 0x01,
+    TH_BTN2       = 0x02,
+    TH_BTN3       = 0x04,
+    TH_BTN4       = 0x08,
+    TH_BTN5       = 0x10,
+    TH_ERR        = 0x80,
+} TH_BUTTON;
+
+
 /** Sample pointing function
- *  Input : scroll (If it's true, cursor dosen't move)
  */
-void thumbhelix(const bool scroll);
+void thumbhelix(void);
 
 /** Read I2C slave value
  *  Output: th (th.z = 0x80 means I2C read error)
@@ -53,10 +66,44 @@ void th_get_center(const Thumbhelix *prev, const Thumbhelix *th, Thumbhelix *cen
  */
 void th_normalize(const Thumbhelix *center, const Thumbhelix *th, Thumbhelix8 *th8);
 
-/** Correct
+/** Correct th8.x and th8.y for cursor
  *  Input : th8
  *  Output: th8
  */
-void th_correct(Thumbhelix8 *th8);
+void th_correct_cursor(Thumbhelix8 *th8);
+
+/** Correct th8.x and th8.y for scroll
+ *  Input : th8
+ *  Output: th8
+ */
+void th_correct_scroll(Thumbhelix8 *th8);
+
+/** Set th8.x and th8.y to cursor
+ *  Input : th8
+ *  Output: th8
+ */
+void th_set_cursor(const Thumbhelix8 *th8, report_mouse_t *r);
+
+/** Set th8.x and th8.y to scroll
+ *  Input : th8
+ *  Output: th8
+ */
+void th_set_scroll(const Thumbhelix8 *th8, report_mouse_t *r);
+
+/** Set th8.z to scroll
+ *  Input : th8
+ *  Output: th8
+ */
+void th_set_buttons(const Thumbhelix8 *th8, report_mouse_t *r);
+
+/** Set button
+ *  Input : TH_BUTTON
+ */
+void th_pressed(const TH_BUTTON b);
+
+/** Unset button
+ *  Input : TH_BUTTON
+ */
+void th_released(const TH_BUTTON b);
 
 #endif

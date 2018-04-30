@@ -7,5 +7,7 @@ EXTRAINCDIRS += $(USER_PATH)/thumbhelix
 
 POINTING_DEVICE_ENABLE = yes
 
+OPT_DEFS += -DUSE_THUMBHELIX
+
 endif
 
