@@ -19,7 +19,8 @@ $ git clone https://github.com/qmk/qmk_firmware.git
 2. Clone thumbhelix as submodule. Please replace [KEYMAP] with your keymap name.
 
 ```bash
-$ git clone https://github.com/yskoht/thumbhelix.git qmk_firmware/users/[KEYMAP]/thumbhelix
+$ cd qmk_firmware
+$ git submodule add https://github.com/yskoht/thumbhelix.git users/[KEYMAP]/thumbhelix
 ```
 
 3.  Add the following lines in your `config.h` and `rules.mk` to build thumbhelix.
